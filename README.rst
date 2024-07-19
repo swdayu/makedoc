@@ -7,7 +7,7 @@ GNU Make v4.4.1 参考手册（2023年2月26日）
 相关链接
 
 * https://www.gnu.org/software/make/manual/make.html
-* https://www.gnu.org/manual/manual.html>
-* https://ftp.gnu.org/gnu/make/>
+* https://www.gnu.org/manual/manual.html
+* https://ftp.gnu.org/gnu/make/
 * https://www.gnu.org/software/make/manual/
 * https://www.kernel.org/doc/html/latest/kbuild/index.html
