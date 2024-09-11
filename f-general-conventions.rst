@@ -71,8 +71,8 @@ MAKEFILE_LIST
     当前 make 解析的 makefile 文件列表，make 会在读取一个 makefile 之前将它加到这个列
     表
 MAKE_RESTARTS
-    由于有 makefile 文件的更新，当前的 make 实例重新启动的次数，初始值为 0，不应该 export
-    这个值
+    由于有 makefile 文件的更新，当前的 make 实例重新启动的次数，初始值为 0，不应该
+    export 这个值
 MAKELEVEL
     make 递归的嵌套深度，顶层 make 的值是 0
 MAKE_TERMOUT
@@ -322,8 +322,8 @@ kbuild Makefiles
 
 顶层 Makefile 读取 .config 配置文件，负责构建内核映像 vmlinux 和各模块，它根据内核的
 源文件目录树来递归地构建这些文件。需要构建的子目录列表依靠 kernal 配置文件配置。同时顶
-层 Makefile 还会包含平台架构相关的文件 arch/$(SRCARCH)/Makefile，该文件描述了特定平
-台架构的相关信息。
+层 Makefile 还会包含平台架构相关的文件 ``arch/$(SRCARCH)/Makefile``，该文件描述了特
+定平台架构的相关信息。
 
 每个子目录定义自己的 kbuild Makefile，用来描述当前模块的构建方式，在具体构建时，make
 根据 config 中的配置来构建这个模块。
@@ -335,12 +335,13 @@ kbuild Makefiles
 这告诉 kbuild 当前模块有一个名为 foo.o 的目标文件需要构建，foo.o 可以从 foo.S foo.c
 或者 foo.cpp 构建出来。
 
-Kduild 会编译所有 $(obj-y) 中的文件，然后调用 $(AR) rcSTP 将这些文件打包到一个 built-in.a
-文件中，最后会被链接到最终的 vmlinux 文件中，通过 scripts/link-vmlinux.sh 脚本。
+Kduild 会编译所有 ``$(obj-y)`` 中的文件，然后调用 ``$(AR) rcSTP`` 将这些文件打包到一
+个 built-in.a 文件中，最后会被链接到最终的 vmlinux 文件中，通过 scripts/link-vmlinux.sh
+脚本。
 
-$(obj-y) 中的文件顺序是重要的，但是允许重复，这些文件按顺序构建到 built-in.a 文件中，
-后面的文件如果与前面的文件名重复会被忽略。最后的链接顺序也是重要的，因为一些函数的会被其
-模块调用存在依赖关系。
+``$(obj-y)`` 中的文件顺序是重要的，但是允许重复，这些文件按顺序构建到 built-in.a 文件
+中，后面的文件如果与前面的文件名重复会被忽略。最后的链接顺序也是重要的，因为一些函数的会
+被其模块调用存在依赖关系。
 
 目标文件还可以放到 lib-y 中，基于这些目标文件最后会生成一个库文件 lib.a，通常 lib-y 的
 使用通常仅限于 lib/ 或者 ``arch/*/lib`` 目录。
@@ -359,7 +360,7 @@ $(obj-y) 中的文件顺序是重要的，但是允许重复，这些文件按�
     # arch/x86/kernal/Makefile
     extra-y += vmlinux.lds
 
-该文件位于 arch/$(SRCARCH)/kernel/vmlinux.lds。
+该文件位于 ``arch/$(SRCARCH)/kernel/vmlinux.lds``。
 
 always-y 指定那些总是会被构建的目标，例如： ::
 
@@ -391,7 +392,7 @@ Kbuild 会跟踪的依赖文件包括：
 2. 在上面前置条件中使用的任何CONFIG_宏配置
 3. 用于编译目标文件的命令行
 
-因此，如果你修改了例如 $(CC) 的一个选项，所有受影响的文件都会重新编译。
+因此，如果你修改了例如 ``$(CC)`` 的一个选项，所有受影响的文件都会重新编译。
 
 **定制规则**
 
@@ -430,10 +431,10 @@ if_changed 宏来实现这个功能，例如： ::
     <target>: <source(s)> FORCE
         $(call if_changed,<command>)
 
-任何使用 if_changed 的目标都必须出现在 $(targets) 列表中，否则命令的检查会失败，对应的
-target 总是会被执行。对于出现在 obj-y/m，lib-y/m，extra-y/m，always-y/m，hostprgs，
-userprogs 中的目标，kbulid 会自动将它们添加到 $(targets) 中。其他的目标，必须手动添加。
-另外添加到 $(targets) 中的目标不需要添加 $(obj)/ 前缀。
+任何使用 if_changed 的目标都必须出现在 ``$(targets)`` 列表中，否则命令的检查会失败，
+对应的 target 总是会被执行。对于出现在 obj-y/m，lib-y/m，extra-y/m，always-y/m，
+hostprgs，userprogs 中的目标，kbulid 会自动将它们添加到 ``$(targets)`` 中。其他的目
+标，必须手动添加。另外添加到 ``$(targets)`` 中的目标不需要添加 ``$(obj)/`` 前缀。
 
 一个目标规则中，if_changed 只能使用一次，它会把当前执行的命令保存到对应 .cmd 文件中，多
 次调用会导致覆盖和不一样的结果。
@@ -442,18 +443,18 @@ userprogs 中的目标，kbulid 会自动将它们添加到 $(targets) 中。其
 ---------
 
 as-option
-    用来给 $(CC) 添加一个编译 .S 文件时的选项，例如： ::
+    用来给 ``$(CC)`` 添加一个编译 .S 文件时的选项，例如： ::
 
         ccflags-y += $(call as-option,-Wa$(comma)-isa=$(isa-y),)
 
-    表示当 $(CC) 编译 .S 时如果支持 -Wa,-isa=$(isa-y) 选项就添加它，否则不添加。如果
-    提供了第三个参数，当不支持第二个参数时添加第三个参数作为选项。
+    表示当 ``$(CC)`` 编译 .S 时如果支持 ``-Wa,-isa=$(isa-y)`` 选项就添加它，否则不添
+    加。如果提供了第三个参数，当不支持第二个参数时添加第三个参数作为选项。
 
 as-instr
     检查对应汇编器是否支持特定的指令。
 
 cc-option
-    检查 $(CC) 是否支持对应的选项，例如： ::
+    检查 ``$(CC)`` 是否支持对应的选项，例如： ::
 
         ccflags-y += $(call cc-option,-march-pentium-mmx,-march=i586)
 
@@ -472,42 +473,42 @@ cc-disable-warning
     只有当支持 -Wno-unused-but-set-variable 时才添加。
 
 gcc-min-version
-    返回 y 仅当 $(CONFIG_GCC_VERSION) 大于等于提供的版本时： ::
+    返回 y 仅当 ``$(CONFIG_GCC_VERSION)`` 大于等于提供的版本时： ::
 
         ccflags-$(call gcc-min-version,70100) := -foo
 
     clang-min-version 针对 clang 有相同的功能。
 
 cc-cross-prefix
-    检查参数对应的前缀 $(CC) 是否支持，即 prefix$(CC) 是否支持。例如： ::
+    检查参数对应的前缀 ``$(CC)`` 是否支持，即 ``prefix$(CC)`` 是否支持。例如： ::
 
         ifeq ($(CROSS_COMPILE),)
         CROSS_COMPILE := $(call cc-cross-prefix,m68k-linux-gnu-)
         endif
 
 ld-option
-    检查 $(LD) 是否支持对应的选项。例如： ::
+    检查 ``$(LD)`` 是否支持对应的选项。例如： ::
 
         LDFLAGS_vmlinux += $(call ld-option,-X)
 
 调用脚本
 --------
 
-Kbuild 提供了 $(CONFIG_SHELL)，$(AWK)，$(PERL)，$(PYTHON3) 等变量用来执行对应的脚本。
-例如： ::
+Kbuild 提供了 ``$(CONFIG_SHELL)``， ``$(AWK)``， ``$(PERL)``， ``$(PYTHON3)`` 等变
+量用来执行对应的脚本。例如： ::
 
     cmd_depmod = $(CONFIG_SHELL) $(srctree)/scripts/depmod.sh $(DEPMOD) $(KERNELRELEASE)
 
 模块目录
 --------
 
-顶层 Makefile 使用core-y，libs-y，drivers-y 来决定构建哪些模块。其中 $(libs-y)指出模
-块的 lib.a 文件的目录路径，其他两个指定对应模块的 built-in.a 的目录路径。
+顶层 Makefile 使用 core-y，libs-y，drivers-y 来决定构建哪些模块。其中 ``$(libs-y)`` 
+指出模块的 lib.a 文件的目录路径，其他两个指定对应模块的 built-in.a 的目录路径。
 
 编译逻辑
 --------
 
-**目标文件的编译**
+目标文件的编译
 
 1. 开始编译 obj/path/foo.o 文件，因为全新编译，还没有该目标依赖的规则，只能使用隐式规
    则： ::
@@ -544,7 +545,7 @@ Kbuild 提供了 $(CONFIG_SHELL)，$(AWK)，$(PERL)，$(PYTHON3) 等变量用来
 2. 修改了对应模块的 Makefile 文件，或者顶层的 Makefile 文件，使得编译命令发生了变化；
 3. 删除了 obj/path/foo.o 文件，或者删除了obj/path/.foo.o.d 文件
 
-**归档目标文件的编译**
+归档目标文件的编译
 
 1. 如果一个目标文件 obj/path/foo.o 是一个归档目标文件，会被区别对待
 
@@ -569,7 +570,7 @@ Kbuild 提供了 $(CONFIG_SHELL)，$(AWK)，$(PERL)，$(PYTHON3) 等变量用来
 
 8. 普通的目标文件必须存在一个对用的源文件 obj/path/foo.c，如果没有就会报错
 
-**从源文件编译库文件**
+从源文件编译库文件
 
 1. 每一个 obj/path/foo.a 都会定义两个规则，一个规则定义构建这个库文件的操作命令： ::
 
@@ -586,7 +587,7 @@ Kbuild 提供了 $(CONFIG_SHELL)，$(AWK)，$(PERL)，$(PYTHON3) 等变量用来
 
 5. 当这些依赖的文件依次构建后，通过 cmd_ar_src_file 创建出最终的库文件
 
-**子目录模块的编译**
+子目录模块的编译
 
 1. 每个子模块 obj/subdir/ 都会定义两个规则，第一个规则说明子模块要构建的目标： ::
 
